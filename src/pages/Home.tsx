@@ -86,7 +86,7 @@ const Home = () => {
           <div className="sm:hidden relative h-full overflow-hidden">
             <div className="absolute inset-0 transform scale-110 animate-float">
               <img
-                src="./src/assets/hero2.png"
+                src="https://minio-minio.m7nkeb.easypanel.host/vant/hero.png"
                 alt="Featured Project"
                 className="w-full h-full object-cover object-center opacity-50"
               />
