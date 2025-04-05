@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply bg-background text-text;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-text hover:bg-opacity-90 transition-colors;
+  }
+  
+  .btn-accent {
+    @apply bg-accent text-background hover:bg-opacity-90 transition-colors;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-left {
+    animation: slideLeft 20s linear infinite;
+  }
+
+  @keyframes slideLeft {
+    from {
+      transform: translateX(0%);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* === Added Animations & Utilities === */
+
+  /* Standard Spin */
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Slow Spin */
+  .animate-spin-slow {
+    animation: spin-slow 5s linear infinite;
+  }
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Hexagon Clip Path */
+  .clip-path-hexagon {
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  }
+
+  /* Subtle Grid Background */
+  .bg-grid-pattern {
+    background-image: linear-gradient(to right, theme('colors.text / 5%') 1px, transparent 1px),
+                      linear-gradient(to bottom, theme('colors.text / 5%') 1px, transparent 1px);
+    background-size: 20px 20px; /* Adjust size as needed */
+  }
+
+   /* Hexagonal Grid Background (alternative, if SVG was preferred - kept for reference) */
+  .bg-hex-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l1.41-1.41-2.83-2.83-1.41 1.41L40 38.59V40zM40 1.41l-1.41-1.4-2.83 2.82-1.41-1.41L38.59 0H40v1.41z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+} 
