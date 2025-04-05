@@ -12,7 +12,7 @@ const TimelineNode = ({ phase, duration, step, isLeft }: { phase: string; durati
   <div className={`relative flex items-center w-full mb-10 md:${isLeft ? 'justify-start' : 'justify-end'}`}>
     {/* Node Content Box */}
     <div className={`relative w-full md:w-5/12 p-4 border border-text/10 bg-background/80 group 
-                     ${isLeft ? 'md:pr-8' : 'md:pl-8'}
+                     md:${isLeft ? 'pr-8' : 'pl-8'}
                      transition-all duration-300 hover:border-primary/30 hover:bg-background/90`}>
       {/* Step Number */}
       <div className={`absolute top-2 font-mono text-3xl text-primary/10 group-hover:text-primary/20 transition-colors right-3`}>
@@ -21,16 +21,16 @@ const TimelineNode = ({ phase, duration, step, isLeft }: { phase: string; durati
       {/* Content */}
       <h3 className="text-md font-semibold text-text/80 group-hover:text-text transition-colors mb-1">{phase}</h3>
       <p className="text-xs font-mono text-primary/50 group-hover:text-primary/70 transition-colors">{duration}</p>
-      {/* Decorative corner hidden on mobile */}
-      <div className={`hidden md:absolute w-3 h-3 border-primary/20 group-hover:border-primary/40 transition-colors 
+      {/* Decorative corner - hidden on mobile, absolute on md+ */}
+      <div className={`absolute hidden md:block w-3 h-3 border-primary/20 group-hover:border-primary/40 transition-colors 
                        ${isLeft ? 'bottom-[-1px] left-[-1px] border-b border-l' : 'top-[-1px] right-[-1px] border-t border-r'}`}/> 
     </div>
 
-    {/* Connector Line & Circle hidden on mobile */}
-    <div className={`hidden md:absolute w-1/2 md:w-[8.33%] h-[2px] 
+    {/* Connector Line & Circle - hidden on mobile, absolute on md+ */}
+    <div className={`absolute hidden md:block w-1/2 md:w-[8.33%] h-[2px] 
                    ${isLeft ? 'left-1/2 bg-gradient-to-r' : 'right-1/2 bg-gradient-to-l'} 
                    from-transparent via-text/10 to-text/10`} />
-    <div className={`hidden md:absolute w-3 h-3 rounded-full border-2 border-text/10 bg-background group-hover:border-primary/50 transition-colors 
+    <div className={`absolute hidden md:block w-3 h-3 rounded-full border-2 border-text/10 bg-background group-hover:border-primary/50 transition-colors 
                    ${isLeft ? 'left-1/2 -translate-x-1/2' : 'right-1/2 translate-x-1/2'}`} />
   </div>
 );
