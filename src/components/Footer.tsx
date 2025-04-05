@@ -15,7 +15,7 @@ const Footer = () => {
           {/* Column 1: Brand & Tagline (Stays Left) */}
           <div className="space-y-3 md:col-span-1">
             <div className="flex items-center space-x-3">
-                <img src="./src/assets/logovant2.png" alt="VANT Logo" className="h-6" />
+                <img src="https://minio-minio.m7nkeb.easypanel.host/vant/logovant2.png" alt="VANT Logo" className="h-6" />
                 <span className="font-bold text-xl text-text">vant<span className="text-text/80">.</span></span> 
             </div>
             <p className="text-sm font-light">

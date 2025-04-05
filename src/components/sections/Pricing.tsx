@@ -28,7 +28,7 @@ const PricingCard = ({ title, price, features, isFeatured = false }: { title: st
         {/* Header with Logo */}
         <div className="flex items-center mb-6">
           {/* Replace Tag icon with img logo */}
-          <img src="./src/assets/logovant2.png" alt="VANT Logo" className="h-5 mr-3" /> 
+          <img src="https://minio-minio.m7nkeb.easypanel.host/vant/logovant2.png" alt="VANT Logo" className="h-5 mr-3" /> 
           <h3 className={`text-xl font-bold ${isFeatured ? 'text-primary' : 'text-text group-hover:text-primary'} transition-colors duration-300`}>{title}</h3>
         </div>
 

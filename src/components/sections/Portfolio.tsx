@@ -131,7 +131,7 @@ const Portfolio = () => {
             title="UpSummit"
             sector="Evento Empresarial"
             result="Palco para Joel Jota, Paulo Vieira, Pablo Marçal e mais."
-            image="./src/assets/portfolio/upsummit.png"
+            image="https://minio-minio.m7nkeb.easypanel.host/vant/portfolio/upsummit.png"
             status="DELIVERED"
             code="UPS-01"
           />
@@ -139,7 +139,7 @@ const Portfolio = () => {
             title="D14 Basketball Academy"
             sector="Formação Esportiva de Elite"
             result="Fundada por ex-jogador e atual comentarista da Band."
-            image="./src/assets/portfolio/d14.png"
+            image="https://minio-minio.m7nkeb.easypanel.host/vant/portfolio/d14.png"
             status="ACTIVE"
             code="D14-02"
           />

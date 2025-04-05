@@ -77,7 +77,7 @@ const Home = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-background via-background/50 to-transparent z-10" />
             </div>
             <img
-              src="./src/assets/hero2.png"
+              src="https://minio-minio.m7nkeb.easypanel.host/vant/hero.png"
               alt="Featured Project"
               className="w-full h-full object-cover object-bottom"
             />
