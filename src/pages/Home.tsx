@@ -93,7 +93,7 @@ const Home = () => {
               />
             </div>
             {/* Overlay gradient for better text visibility - Reduced opacity */}
-            <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/60 to-background/50" />
+            <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/40 to-background/30" />
           </div>
         </div>
 

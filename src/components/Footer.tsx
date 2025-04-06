@@ -28,7 +28,7 @@ const Footer = () => {
              <h3 className="font-semibold text-base text-text/90 mb-3 tracking-wide">Contato Rápido</h3>
              <a href="mailto:joseguilhermecosta@gmail.com" className="flex items-center space-x-2 group text-sm hover:text-primary transition-colors">
                 <EnvelopeSimple size={16} className="text-primary/50 group-hover:text-primary transition-colors"/>
-                <span>joseguilhermecosta@gmail.com</span>
+                <span>dotvant@gmail.com</span>
              </a>
              <a href="https://wa.me/5511914106730" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 group text-sm hover:text-primary transition-colors">
                <FaWhatsapp size={16} className="text-primary/50 group-hover:text-primary transition-colors"/>
