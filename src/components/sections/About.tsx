@@ -74,16 +74,16 @@ const About = () => {
           {/* Right Column - Text Content */}
           <div className="lg:col-span-7 space-y-6 text-lg lg:text-xl text-text/70 font-light">
               <p className="border-l-2 border-primary/20 pl-4 hover:text-text/90 hover:border-primary/40 transition-all duration-300">
-                A VANT é uma unidade de operações digitais focada em <strong className="font-semibold text-text/90">performance, clareza e posicionamento</strong> estratégico através de websites de alto impacto.
+                A VANT é uma empresa de desenvolvimento de software especializada em <strong className="font-semibold text-text/90">performance, clareza e posicionamento</strong>, através de websites e plataformas digitais.
               </p>
               <p className="pl-4 hover:text-text/90 transition-colors duration-300">
-                Nossa doutrina é a <strong className="font-semibold text-text/90">obsessão pela excelência</strong>. Garantimos que cada ativo digital comunique autoridade, maximize a conversão e reflita a verdadeira identidade da marca.
+                Nós alimentamos uma <strong className="font-semibold text-text/90">mentalidade obsessiva por excelência</strong>. Nosso compromisso é fazer com que cada marca tenha uma presença digital que comunique autoridade, converta com consistência e represente o que ela é de verdade.
               </p>
               <p className="border-l-2 border-primary/20 pl-4 hover:text-text/90 hover:border-primary/40 transition-all duration-300">
-                Não vendemos templates. Desenvolvemos <strong className="font-semibold text-text/90">estratégias e designs sob medida</strong>, alinhados aos objetivos táticos e à visão de longo prazo de cada cliente.
+                Não vendemos templates. Trabalhamos com <strong className="font-semibold text-text/90">soluções pensadas do zero</strong>, alinhadas à visão e à ambição de cada cliente.
               </p>
-               <p className="pl-4 hover:text-text/90 transition-colors duration-300">
-                No cenário digital, a <strong className="font-semibold text-text/90">imposição é a única alternativa ao desaparecimento</strong>. A VANT assegura a sua supremacia.
+              <p className="pl-4 hover:text-text/90 transition-colors duration-300">
+                No cenário digital, a <strong className="font-semibold text-text/90">imposição é a única alternativa ao desaparecimento</strong>. A VANT assegura o seu destaque.
               </p>
           </div>
 
