@@ -145,8 +145,8 @@ const Portfolio = () => {
           />
         </div>
 
-        {/* Bottom Technical Element */}
-        <div className="absolute bottom-8 left-8 font-mono text-xs text-text/5">
+        {/* Bottom Technical Element - Hidden on mobile */}
+        <div className="absolute bottom-8 left-8 font-mono text-xs text-text/5 hidden sm:block">
           <div className="space-y-1">
             <div className="flex items-center">
               <div className="w-2 h-2 border border-text/5 mr-2" />

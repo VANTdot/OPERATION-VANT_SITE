@@ -1,4 +1,4 @@
-import { Code, Rocket, ChartLineUp, WarningCircle, Palette } from '@phosphor-icons/react';
+import { Code, Rocket, ChartLineUp, WarningCircle } from '@phosphor-icons/react';
 
 interface ServiceCardProps {
   code: string;
@@ -103,7 +103,7 @@ const ServiceCard = ({ code, title, description, icon: Icon, classification = "C
 
 const Services = () => {
   return (
-    <section id="servicos" className="min-h-screen bg-background/50 scroll-mt-20 relative overflow-hidden flex flex-col justify-center py-24 lg:py-32">
+    <section id="servicos" className="min-h-screen bg-background/50 scroll-mt-20 relative overflow-hidden flex items-center">
       {/* Technical Background Pattern */}
       <div className="absolute inset-0 pointer-events-none select-none">
         {/* Angular Decorative Lines */}
@@ -115,64 +115,83 @@ const Services = () => {
           <div className="absolute top-8 right-8 w-full h-[1px] bg-text/5 transform rotate-45" />
           <div className="absolute top-16 right-8 w-full h-[1px] bg-text/5 transform rotate-45" />
         </div>
-        {/* Grid Pattern */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]"/>
       </div>
 
-      {/* Technical Markings - Hidden on mobile */}
-      <div className="absolute top-12 right-12 text-xs font-mono text-text/10 text-right space-y-1 z-10 hidden sm:block">
-           <div>SVC_MODULE_ID: SRV_CORE</div>
-           <div>DEPLOYMENT_TARGET: GLOBAL</div>
-           <div>ACCESS_LEVEL: PUBLIC</div>
-      </div>
-      {/* Technical Markings - Hidden on mobile */}
-      <div className="absolute bottom-12 left-12 text-xs font-mono text-text/10 space-y-1 z-10 hidden sm:block">
-           <div>OPERATION_STATUS: ACTIVE</div>
-           <div>SYSTEM_INTEGRITY: NOMINAL</div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 w-full relative z-20">
-        {/* Section Header - Updated Style & Centered */}
-        <div className="mb-20 lg:mb-24 relative text-center">
-           {/* Operation Line Above Title */}
-          <div className="flex items-center justify-center mb-4">
-            {/* Optional: Add lines like other centered headers */} 
-            {/* <div className="w-8 h-[1px] bg-primary/40 mr-3" /> */}
-            <span className="font-mono text-sm text-primary/50 tracking-widest">// VANT SERVICE PROTOCOLS</span>
-            {/* <div className="w-8 h-[1px] bg-primary/40 ml-3" /> */}
+      {/* Technical Markings */}
+      <div className="absolute top-8 right-8 text-xs font-mono text-text/5">
+        <div className="space-y-1">
+          <div className="flex items-center">
+            <span className="w-2 h-[1px] bg-text/5 mr-2" />
+            <span>XE-SRV-25</span>
           </div>
-          {/* Large Title Style */}
-          <h2 className="text-[10vw] md:text-[8vw] lg:text-[7rem] font-black leading-none text-text relative z-10">
-            Serviços<span className="text-primary">.</span>
+          <div className="flex items-center">
+            <span className="w-2 h-[1px] bg-text/5 mr-2" />
+            <span>TACTICAL OPS</span>
+          </div>
+          <div className="flex items-center">
+            <span className="w-2 h-[1px] bg-text/5 mr-2" />
+            <span>ACTIVE STATUS</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-20 w-full">
+        {/* Section Header */}
+        <div className="mb-16 relative">
+          <div className="flex items-center mb-4">
+            <div className="w-4 h-[2px] bg-primary/40 mr-2" />
+            <span className="font-mono text-sm text-primary/40">OPERATION: VANT_SERVICES</span>
+            <div className="w-4 h-[2px] bg-primary/40 ml-2" />
+          </div>
+          <h2 className="text-4xl font-bold text-text flex items-center">
+            Serviços
+            <span className="text-primary ml-1">.</span>
+            <div className="w-2 h-2 border border-primary/30 ml-4" />
           </h2>
-           {/* Optional: Subtitle or decorative line below */}
-           {/* <div className="h-[2px] w-24 bg-primary/40 mt-6 mx-auto" /> */}
         </div>
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
           <ServiceCard
-            code="DEV-001"
-            title="Desenvolvimento Web & Plataformas"
-            description="Criamos desde websites institucionais e landing pages otimizadas até plataformas web complexas com funcionalidades avançadas (áreas de membros, dashboards, integrações). Soluções sob medida para suas necessidades."
+            code="DSG-001"
+            title="Design Estratégico"
+            description="Interfaces que comunicam autoridade. Design funcional alinhado ao seu posicionamento. Sem templates, só soluções personalizadas."
             icon={Code}
           />
           <ServiceCard
-            code="OPT-002"
-            title="Otimização de Performance & SEO"
-            description="Foco total em velocidade, responsividade e acessibilidade. Implementamos as melhores práticas de SEO para garantir máxima visibilidade e performance técnica impecável."
+            code="PRF-002"
+            title="Performance Total"
+            description="Sites rápidos e responsivos. SEO otimizado para dominar buscas. Segurança e estabilidade em primeiro lugar."
             icon={Rocket}
             classification="PRIORITY LEVEL"
             warning={true}
           />
           <ServiceCard
-            code="DSN-003"
-            title="Design Estratégico & UI/UX"
-            description="Mapeamos a jornada do usuário e criamos interfaces (UI) intuitivas e experiências (UX) engajadoras. Design que não é só estético, mas funcional e alinhado aos seus objetivos de negócio."
-            icon={Palette}
+            code="CNV-003"
+            title="Conversão Real"
+            description="Experiência focada em resultados. Elementos estratégicos de conversão. Mensuração precisa de performance."
+            icon={ChartLineUp}
+            classification="RESTRICTED DATA"
           />
         </div>
 
+        {/* Bottom Technical Element */}
+        <div className="absolute bottom-4 left-8 font-mono text-xs text-text/5">
+          <div className="space-y-1">
+            <div className="flex items-center">
+              <div className="w-2 h-2 border border-text/5 mr-2" />
+              <span>DEPLOYMENT: ACTIVE</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-2 h-2 border border-text/5 mr-2" />
+              <span>EFFICIENCY: 98.5%</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-2 h-2 border border-text/5 mr-2" />
+              <span>UPTIME: 99.99%</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -42,13 +42,14 @@ const Timeline = () => {
       <div className="absolute inset-0 pointer-events-none select-none opacity-70">
         {/* Grid Pattern */}
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]"/>
-         {/* Technical markings */}
-         <div className="absolute top-12 right-12 text-xs font-mono text-text/10 text-right space-y-1">
+         {/* Technical markings - Hidden on mobile */}
+         <div className="absolute top-12 right-12 text-xs font-mono text-text/10 text-right space-y-1 hidden sm:block">
            <div>PROCESS_FLOW: VNT.EXE.25</div>
            <div>MODE: SEQUENTIAL</div>
            <div>EFFICIENCY_TARGET: 99%</div>
          </div>
-          <div className="absolute bottom-12 left-12 text-xs font-mono text-text/10 space-y-1">
+         {/* Technical markings - Hidden on mobile */}
+          <div className="absolute bottom-12 left-12 text-xs font-mono text-text/10 space-y-1 hidden sm:block">
            <div>TIMELINE_INTEGRITY: CHECKED</div>
            <div>EST_DURATION: T+30 Dias</div>
          </div>

@@ -45,7 +45,10 @@ const Footer = () => {
                 <MapPin size={16} className="text-primary/50"/>
                 <span>São Paulo, SP - Brasil</span>
              </div>
-             <p className="text-xs text-text/50 font-mono pt-1 md:text-right">COORD: 23.55S / 46.63W</p>
+             {/* Coords hidden on mobile (up to md breakpoint) */}
+             <p className="text-xs text-text/50 font-mono pt-1 md:text-right hidden md:block">
+               COORD: 23.55S / 46.63W
+             </p>
            </div>
 
         </div>

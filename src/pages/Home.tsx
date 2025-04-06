@@ -52,15 +52,16 @@ const Home = () => {
           <div className="absolute top-0 left-0 w-16 h-16 border-l border-t border-text/10 opacity-50" />
           <div className="absolute bottom-0 right-0 w-16 h-16 border-r border-b border-text/10 opacity-50" />
 
-          {/* Technical markings */}
-          <div className="absolute top-4 sm:top-8 right-4 sm:right-8 text-xs font-mono text-text/10">
+          {/* Technical markings - Hidden on mobile */}
+          <div className="absolute top-4 sm:top-8 right-4 sm:right-8 text-xs font-mono text-text/10 hidden sm:block">
             <div className="space-y-1 text-right">
               <div>SYS_REF: HERO.VNT.25</div>
               <div>STATUS: ONLINE</div>
               <div>SEC_LVL: ALPHA</div>
             </div>
           </div>
-          <div className="absolute bottom-4 sm:bottom-8 left-4 sm:left-8 text-xs font-mono text-text/10">
+          {/* Technical markings - Hidden on mobile */}
+          <div className="absolute bottom-4 sm:bottom-8 left-4 sm:left-8 text-xs font-mono text-text/10 hidden sm:block">
             <div className="space-y-1">
               <div>COORD: 23.55S/46.63W</div>
               <div>SIGNAL: STRONG</div>
@@ -91,8 +92,8 @@ const Home = () => {
                 className="w-full h-full object-cover object-center opacity-50"
               />
             </div>
-            {/* Overlay gradient for better text visibility */}
-            <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background/40" />
+            {/* Overlay gradient for better text visibility - Reduced opacity */}
+            <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/60 to-background/50" />
           </div>
         </div>
 
@@ -152,13 +153,13 @@ const Home = () => {
           <div className="absolute bottom-0 right-0 w-1/4 h-full border-l border-text/5 transform -skew-x-12 origin-bottom-right opacity-30" />
         </div>
 
-        {/* Bottom Operation Code */}
+        {/* Bottom Operation Code - Visible on all screens again */}
         <div className="absolute bottom-4 sm:bottom-6 right-4 sm:right-6 font-mono text-[10px] sm:text-xs text-text/20 z-10">
           // END_TRANSMISSION :: VANT.OP.CLOSE.2025
         </div>
 
-         {/* Top Left Accent */}
-        <div className="absolute top-8 left-8 font-mono text-xs text-primary/40 z-10 space-y-1">
+         {/* Top Left Accent - Still hidden on mobile */}
+        <div className="absolute top-8 left-8 font-mono text-xs text-primary/40 z-10 space-y-1 hidden sm:block">
           <div>[STATUS: AWAITING_CONTACT]</div>
           <div>[SIGNAL: ESTABLISHED]</div>
         </div>

@@ -33,15 +33,16 @@ const About = () => {
         <div className="absolute top-0 left-0 w-1/2 h-full border-r border-text/5 transform -skew-x-12 origin-top-left opacity-50" />
         <div className="absolute bottom-0 right-0 w-1/2 h-full border-l border-text/5 transform -skew-x-12 origin-bottom-right opacity-50" />
         
-        {/* Technical markings */}
-        <div className="absolute top-8 right-8 text-xs font-mono text-text/10">
+        {/* Technical markings - Hidden on mobile */}
+        <div className="absolute top-8 right-8 text-xs font-mono text-text/10 hidden sm:block">
           <div className="space-y-1 text-right">
             <div>SYS_REF: VNT.ABT.2025</div>
             <div>CLASSIFICATION: LVL-3 / SECURE</div>
             <div>GRID_TARGET: 8A-DELTA</div>
           </div>
         </div>
-        <div className="absolute bottom-8 left-8 text-xs font-mono text-text/10">
+        {/* Bottom-left markings - Hidden on mobile */}
+        <div className="absolute bottom-8 left-8 text-xs font-mono text-text/10 hidden sm:block">
           <div className="space-y-1">
             <div>COORDINATES: 23.55S / 46.63W</div>
             <div>SYSTEM_STATUS: OPERATIONAL</div>
@@ -50,8 +51,8 @@ const About = () => {
         </div>
       </div>
 
-      {/* Operation Code */}
-      <div className="absolute top-12 left-8 font-mono text-sm text-primary/60 z-10 bg-background/50 px-2 py-1 border border-primary/20">
+      {/* Operation Code - Adjusted position for mobile */}
+      <div className="absolute top-8 left-4 sm:top-12 sm:left-8 font-mono text-sm text-primary/60 z-10 bg-background/50 px-2 py-1 border border-primary/20">
         OPERATION: VANT_ABOUT
       </div>
 

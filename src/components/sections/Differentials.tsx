@@ -45,13 +45,14 @@ const Differentials = () => {
         <div className="absolute top-0 right-0 w-1/3 h-full border-l border-text/5 transform skew-x-12 origin-top-right opacity-60" />
         <div className="absolute bottom-0 left-0 w-1/3 h-full border-r border-text/5 transform skew-x-12 origin-bottom-left opacity-60" />
         
-        {/* Technical Markings */}
-         <div className="absolute top-12 right-12 text-xs font-mono text-text/10 text-right space-y-1">
+        {/* Technical Markings - Hidden on mobile */}
+         <div className="absolute top-12 right-12 text-xs font-mono text-text/10 text-right space-y-1 hidden sm:block">
            <div>SYS_MODULE: CORE_ADVANTAGE</div>
            <div>REF_ID: VNT.DIFF.2025</div>
            <div>ACCESS_LEVEL: PUBLIC</div>
          </div>
-          <div className="absolute bottom-12 left-12 text-xs font-mono text-text/10 space-y-1">
+         {/* Technical Markings - Hidden on mobile */}
+          <div className="absolute bottom-12 left-12 text-xs font-mono text-text/10 space-y-1 hidden sm:block">
            <div>SECTOR: STRATEGIC_DIFFERENTIATION</div>
            <div>STATUS: ANALYSIS_COMPLETE</div>
          </div>

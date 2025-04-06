@@ -102,13 +102,14 @@ const Pricing = () => {
       <div className="absolute inset-0 pointer-events-none select-none opacity-80">
         {/* Grid Pattern */}
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]"/>
-        {/* Technical Markings */}
-         <div className="absolute top-12 left-12 text-xs font-mono text-text/10 space-y-1">
+        {/* Technical Markings - Hidden on mobile */}
+         <div className="absolute top-12 left-12 text-xs font-mono text-text/10 space-y-1 hidden sm:block">
            <div>MODULE_ID: PRICING_MATRIX_V2</div>
            <div>PLAN_REFS: VBS, VPRO, BLKOPS</div>
            <div>CURRENCY: BRL</div>
          </div>
-          <div className="absolute bottom-12 right-12 text-xs font-mono text-text/10 text-right space-y-1">
+         {/* Technical Markings - Hidden on mobile */}
+          <div className="absolute bottom-12 right-12 text-xs font-mono text-text/10 text-right space-y-1 hidden sm:block">
            <div>ACCESS_POINT: PUBLIC_FACING</div>
            <div>INTEGRITY_HASH: ...b7e5f2</div> 
          </div>
