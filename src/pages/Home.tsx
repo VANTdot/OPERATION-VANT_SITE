@@ -6,6 +6,7 @@ import Differentials from '../components/sections/Differentials';
 import Timeline from '../components/sections/Timeline';
 import Pricing from '../components/sections/Pricing';
 import { ArrowRight } from '@phosphor-icons/react';
+import { useState, useEffect } from 'react';
 
 const CTAButton = ({ children, href }: { children: string; href?: string }) => {
   const commonClasses = "relative inline-flex items-center justify-center bg-primary px-8 py-4 text-base text-white group overflow-hidden border border-transparent hover:border-primary/50 transition-colors duration-300 font-medium";
@@ -38,6 +39,15 @@ const Home = () => {
   const whatsappNumber = "5511914106730";
   const finalCtaMessage = encodeURIComponent("Olá! Visitei o site da VANT e gostaria de agendar uma conversa sobre meu projeto.");
   const finalCtaUrl = `https://wa.me/${whatsappNumber}?text=${finalCtaMessage}`;
+  const [isHeroVisible, setIsHeroVisible] = useState(false);
+
+  useEffect(() => {
+    // Trigger hero animation shortly after mount
+    const timer = setTimeout(() => {
+      setIsHeroVisible(true);
+    }, 150); // Adjusted delay
+    return () => clearTimeout(timer);
+  }, []);
   
   return (
     <div className="bg-background">
@@ -70,8 +80,12 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Background Image */}
-        <div className="absolute inset-0">
+        {/* Background Image - Faster fade-in */}
+        <div 
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+            isHeroVisible ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
           {/* Desktop Image */}
           <div className="absolute top-0 right-0 w-1/2 h-full hidden sm:block">
             <div className="absolute inset-0">
@@ -97,11 +111,15 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Content */}
+        {/* Content - Appear together, smoother easing */}
         <div className="relative z-20 h-full">
           <div className="max-w-7xl mx-auto px-4 h-full">
             <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
-              <div className="flex flex-col justify-center space-y-6 sm:space-y-8 py-12 sm:py-20">
+              <div 
+                className={`flex flex-col justify-center space-y-6 sm:space-y-8 py-12 sm:py-20 transition-all duration-1000 ease-in-out delay-200 ${
+                  isHeroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+                }`}
+              >
                 <div>
                   <span className="text-primary/70 text-xs sm:text-sm tracking-wider font-mono">// OPERATION: VANGUARD</span>
                   <h1 className="text-[15vw] sm:text-[12vw] lg:text-[8rem] font-bold text-text mt-2 sm:mt-4 leading-none">

@@ -26,9 +26,11 @@ const CTAButton = ({ children }: { children: string }) => (
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   
-  // Close menu when window is resized beyond mobile breakpoint
   useEffect(() => {
+    setIsMounted(true);
+
     const handleResize = () => {
       if (window.innerWidth >= 768 && isOpen) {
         setIsOpen(false);
@@ -42,11 +44,17 @@ const Navbar = () => {
   const closeMenu = () => setIsOpen(false);
 
   return (
-    <nav className="fixed w-full top-0 z-50 bg-background/80 backdrop-blur-sm">
+    <nav 
+      className="fixed w-full top-0 z-50 bg-background/80 backdrop-blur-sm"
+    >
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex h-20 items-center justify-between">
-          {/* Left */}
-          <div className="flex items-center pl-4">
+          {/* Left - Faster, smoother animation */}
+          <div 
+            className={`flex items-center pl-4 transition-all duration-500 ease-in-out ${
+              isMounted ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
+            }`}
+          >
             <a 
               href="#hero" 
               className="font-bold text-xl text-text"
@@ -59,16 +67,24 @@ const Navbar = () => {
             </a>
           </div>
 
-          {/* Center - Desktop Navigation */}
-          <div className="hidden md:flex space-x-8">
+          {/* Center - Desktop Navigation - Faster, smoother animation */}
+          <div 
+            className={`hidden md:flex space-x-8 transition-all duration-500 ease-in-out delay-100 ${
+              isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+            }`}
+          >
             <NavLink to="sobre">Sobre</NavLink>
             <NavLink to="servicos">Serviços</NavLink>
             <NavLink to="portfolio">Portfólio</NavLink>
             <NavLink to="processo">Processo</NavLink>
           </div>
 
-          {/* Right */}
-          <div className="flex items-center pr-4">
+          {/* Right - Faster, smoother animation */}
+          <div 
+            className={`flex items-center pr-4 transition-all duration-500 ease-in-out delay-200 ${
+              isMounted ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
+            }`}
+          >
             <a 
               href="#contato"
               onClick={(e) => {
@@ -98,7 +114,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - Animation updated here */}
         <div 
           className={`md:hidden absolute top-20 left-0 w-full bg-background/95 backdrop-blur-md transform transition-all duration-300 ease-in-out overflow-hidden ${
             isOpen 
