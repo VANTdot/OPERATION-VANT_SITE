@@ -7,6 +7,7 @@ import Timeline from '../components/sections/Timeline';
 import Pricing from '../components/sections/Pricing';
 import { ArrowRight } from '@phosphor-icons/react';
 import { useState, useEffect } from 'react';
+import { TypeAnimation } from 'react-type-animation';
 
 const CTAButton = ({ children, href }: { children: string; href?: string }) => {
   const commonClasses = "relative inline-flex items-center justify-center bg-primary px-8 py-4 text-base text-white group overflow-hidden border border-transparent hover:border-primary/50 transition-colors duration-300 font-medium";
@@ -40,13 +41,23 @@ const Home = () => {
   const finalCtaMessage = encodeURIComponent("Olá! Visitei o site da VANT e gostaria de agendar uma conversa sobre meu projeto.");
   const finalCtaUrl = `https://wa.me/${whatsappNumber}?text=${finalCtaMessage}`;
   const [isHeroVisible, setIsHeroVisible] = useState(false);
+  const [startTyping, setStartTyping] = useState(false);
 
   useEffect(() => {
-    // Trigger hero animation shortly after mount
-    const timer = setTimeout(() => {
+    // Trigger hero visibility shortly after mount
+    const heroTimer = setTimeout(() => {
       setIsHeroVisible(true);
-    }, 150); // Adjusted delay
-    return () => clearTimeout(timer);
+    }, 150);
+
+    // Trigger typing animation after main content animation starts
+    const typingTimer = setTimeout(() => {
+       setStartTyping(true);
+    }, 500); // Delay should be after main content starts animating (delay-200)
+
+    return () => {
+      clearTimeout(heroTimer);
+      clearTimeout(typingTimer);
+    }
   }, []);
   
   return (
@@ -56,28 +67,44 @@ const Home = () => {
         {/* Subtle Background Grid */}
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] pointer-events-none"></div>
 
-        {/* Technical Background Elements */}
+        {/* Technical Background Elements - Typing animation */}
         <div className="absolute inset-0 pointer-events-none select-none">
           {/* Corner Accents */}
           <div className="absolute top-0 left-0 w-16 h-16 border-l border-t border-text/10 opacity-50" />
           <div className="absolute bottom-0 right-0 w-16 h-16 border-r border-b border-text/10 opacity-50" />
 
-          {/* Technical markings - Hidden on mobile */}
-          <div className="absolute top-4 sm:top-8 right-4 sm:right-8 text-xs font-mono text-text/10 hidden sm:block">
-            <div className="space-y-1 text-right">
-              <div>SYS_REF: HERO.VNT.25</div>
-              <div>STATUS: ONLINE</div>
-              <div>SEC_LVL: ALPHA</div>
+          {/* Technical markings - Typing animation */}
+          {startTyping && (
+            <div 
+              className="absolute top-4 sm:top-8 right-4 sm:right-8 text-xs font-mono text-text/10 hidden sm:block"
+            >
+              <TypeAnimation
+                sequence={[
+                  'SYS_REF: HERO.VNT.25\nSTATUS: ONLINE\nSEC_LVL: ALPHA',
+                ]}
+                wrapper="div"
+                speed={70} // Adjust typing speed (lower is faster)
+                style={{ whiteSpace: 'pre-line', display: 'inline-block' }}
+                cursor={false} // Hide cursor after typing
+              />
             </div>
-          </div>
-          {/* Technical markings - Hidden on mobile */}
-          <div className="absolute bottom-4 sm:bottom-8 left-4 sm:left-8 text-xs font-mono text-text/10 hidden sm:block">
-            <div className="space-y-1">
-              <div>COORD: 23.55S/46.63W</div>
-              <div>SIGNAL: STRONG</div>
-              <div>GRID: H23KML0549</div>
+          )}
+          {/* Technical markings - Typing animation - Adjusted position */}
+          {startTyping && (
+            <div 
+              className="absolute bottom-12 sm:bottom-16 left-4 sm:left-8 text-xs font-mono text-text/10 hidden sm:block"
+            >
+               <TypeAnimation
+                sequence={[
+                  'COORD: 23.55S/46.63W\nSIGNAL: STRONG\nGRID: H23KML0549',
+                ]}
+                wrapper="div"
+                speed={70} // Adjust typing speed
+                style={{ whiteSpace: 'pre-line', display: 'inline-block' }}
+                cursor={false}
+                />
             </div>
-          </div>
+          )}
         </div>
 
         {/* Background Image - Faster fade-in */}
