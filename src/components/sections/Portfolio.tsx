@@ -7,19 +7,20 @@ interface PortfolioItemProps {
   image: string;
   status?: string;
   code?: string;
+  link?: string;
 }
 
-const PortfolioItem = ({ title, sector, result, image, status = "ACTIVE", code = "PRJ" }: PortfolioItemProps) => (
+const PortfolioItem = ({ title, sector, result, image, status = "ACTIVE", code = "PRJ", link }: PortfolioItemProps) => (
   <div className="group relative">
     {/* Main Container */}
     <div className="relative overflow-hidden bg-background border border-text/10">
       {/* Image Container with Overlay */}
-      <div className="relative h-[300px] overflow-hidden">
+      <div className="relative h-[180px] sm:h-[220px] md:h-[300px] overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background/90 z-10" />
         <img 
           src={image} 
           alt={title} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-contain sm:object-cover transition-transform duration-700 group-hover:scale-110"
         />
         
         {/* Technical Overlay */}
@@ -82,6 +83,17 @@ const PortfolioItem = ({ title, sector, result, image, status = "ACTIVE", code =
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-primary/40 to-transparent" />
         <div className="absolute bottom-0 right-0 w-full h-[1px] bg-gradient-to-l from-primary/40 to-transparent" />
       </div>
+
+      {/* Link Overlay */}
+      {link && (
+        <a 
+          href={link} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="absolute inset-0 z-30"
+          aria-label={`Visitar ${title}`}
+        />
+      )}
     </div>
   </div>
 );
@@ -134,6 +146,7 @@ const Portfolio = () => {
             image="https://minio-minio.m7nkeb.easypanel.host/vant/portfolio/upsummit.png"
             status="DELIVERED"
             code="UPS-01"
+            link="https://upsummit.netlify.app/"
           />
           <PortfolioItem
             title="D14 Basketball Academy"
@@ -142,6 +155,7 @@ const Portfolio = () => {
             image="https://minio-minio.m7nkeb.easypanel.host/vant/portfolio/d14.png"
             status="ACTIVE"
             code="D14-02"
+            link="https://d14basketballacademy.com.br"
           />
         </div>
 
