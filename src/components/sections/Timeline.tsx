@@ -1,4 +1,5 @@
 import { ArrowsClockwise } from '@phosphor-icons/react';
+import { useInView } from 'react-intersection-observer';
 
 const timelineData = [
   { phase: "Diagnóstico", duration: "T+1 Dia", step: "01" },
@@ -8,32 +9,47 @@ const timelineData = [
   { phase: "Validação e Go-Live", duration: "T+7 Dias", step: "05" },
 ];
 
-const TimelineNode = ({ phase, duration, step, isLeft }: { phase: string; duration: string; step: string; isLeft: boolean }) => (
-  <div className={`relative flex items-center w-full mb-10 md:${isLeft ? 'justify-start' : 'justify-end'}`}>
-    {/* Node Content Box */}
-    <div className={`relative w-full md:w-5/12 p-4 border border-text/10 bg-background/80 group 
+const TimelineNode = ({ phase, duration, step, isLeft, index }: { phase: string; duration: string; step: string; isLeft: boolean; index: number }) => {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  const animationDelay = index * 150;
+
+  return (
+    <div 
+      ref={ref}
+      className={`relative flex items-center w-full mb-10 md:${isLeft ? 'justify-start' : 'justify-end'} transition-all duration-700 ease-out ${
+        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+      }`}
+      style={{ transitionDelay: `${inView ? animationDelay : 0}ms` }}
+    >
+      {/* Node Content Box */}
+      <div className={`relative w-full md:w-5/12 p-4 border border-text/10 bg-background/80 group 
                      md:${isLeft ? 'pr-8' : 'pl-8'}
                      transition-all duration-300 hover:border-primary/30 hover:bg-background/90`}>
-      {/* Step Number */}
-      <div className={`absolute top-2 font-mono text-3xl text-primary/10 group-hover:text-primary/20 transition-colors right-3`}>
-        {step}
+        {/* Step Number */}
+        <div className={`absolute top-2 font-mono text-3xl text-primary/10 group-hover:text-primary/20 transition-colors right-3`}>
+          {step}
+        </div>
+        {/* Content */}
+        <h3 className="text-md font-semibold text-text/80 group-hover:text-text transition-colors mb-1">{phase}</h3>
+        <p className="text-xs font-mono text-primary/50 group-hover:text-primary/70 transition-colors">{duration}</p>
+        {/* Decorative corner - hidden on mobile, absolute on md+ */}
+        <div className={`absolute hidden md:block w-3 h-3 border-primary/20 group-hover:border-primary/40 transition-colors 
+                         ${isLeft ? 'bottom-[-1px] left-[-1px] border-b border-l' : 'top-[-1px] right-[-1px] border-t border-r'}`}/> 
       </div>
-      {/* Content */}
-      <h3 className="text-md font-semibold text-text/80 group-hover:text-text transition-colors mb-1">{phase}</h3>
-      <p className="text-xs font-mono text-primary/50 group-hover:text-primary/70 transition-colors">{duration}</p>
-      {/* Decorative corner - hidden on mobile, absolute on md+ */}
-      <div className={`absolute hidden md:block w-3 h-3 border-primary/20 group-hover:border-primary/40 transition-colors 
-                       ${isLeft ? 'bottom-[-1px] left-[-1px] border-b border-l' : 'top-[-1px] right-[-1px] border-t border-r'}`}/> 
-    </div>
 
-    {/* Connector Line & Circle - hidden on mobile, absolute on md+ */}
-    <div className={`absolute hidden md:block w-1/2 md:w-[8.33%] h-[2px] 
-                   ${isLeft ? 'left-1/2 bg-gradient-to-r' : 'right-1/2 bg-gradient-to-l'} 
-                   from-transparent via-text/10 to-text/10`} />
-    <div className={`absolute hidden md:block w-3 h-3 rounded-full border-2 border-text/10 bg-background group-hover:border-primary/50 transition-colors 
-                   ${isLeft ? 'left-1/2 -translate-x-1/2' : 'right-1/2 translate-x-1/2'}`} />
-  </div>
-);
+      {/* Connector Line & Circle - hidden on mobile, absolute on md+ */}
+      <div className={`absolute hidden md:block w-1/2 md:w-[8.33%] h-[2px] 
+                     ${isLeft ? 'left-1/2 bg-gradient-to-r' : 'right-1/2 bg-gradient-to-l'} 
+                     from-transparent via-text/10 to-text/10`} />
+      <div className={`absolute hidden md:block w-3 h-3 rounded-full border-2 border-text/10 bg-background group-hover:border-primary/50 transition-colors 
+                     ${isLeft ? 'left-1/2 -translate-x-1/2' : 'right-1/2 translate-x-1/2'}`} />
+    </div>
+  );
+};
 
 const Timeline = () => {
   return (
@@ -80,7 +96,8 @@ const Timeline = () => {
             <TimelineNode 
               key={item.step} 
               {...item} 
-              isLeft={index % 2 === 0} // This prop now only affects md+ layout
+              isLeft={index % 2 === 0}
+              index={index}
             />
           ))}
         </div>

@@ -117,7 +117,7 @@ const About = () => {
     <section 
       ref={ref} 
       id="sobre" 
-      className="transform min-h-screen bg-background relative overflow-hidden flex items-center py-20"
+      className="min-h-screen bg-background relative overflow-hidden flex items-center py-20"
     >
       {/* Enhanced Background Elements */}
       <div className="absolute inset-0 pointer-events-none select-none opacity-70">

@@ -1,14 +1,29 @@
 import { CheckCircle, Star } from '@phosphor-icons/react';
 import { FaWhatsapp } from 'react-icons/fa';
+import { useInView } from 'react-intersection-observer';
+import { useState, useEffect } from 'react';
+import { TypeAnimation } from 'react-type-animation';
 
-const PricingCard = ({ title, price, features, isFeatured = false }: { title: string; price: string; features: string[]; isFeatured?: boolean }) => {
+const PricingCard = ({ title, price, features, isFeatured = false, index }: { title: string; price: string; features: string[]; isFeatured?: boolean; index: number }) => {
   const whatsappNumber = "5511914106730";
   const message = encodeURIComponent(`Olá! Tenho interesse no plano ${title}. Podemos conversar?`);
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
 
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  const animationDelay = index * 150;
+
   return (
-    <div className={`relative border p-8 group overflow-hidden transition-all duration-300 flex flex-col 
-                    ${isFeatured ? 'border-primary/40 bg-primary/5' : 'border-text/10 bg-background/50 hover:border-text/20'}`}>
+    <div 
+      ref={ref}
+      className={`relative border p-8 group overflow-hidden transition-all duration-700 ease-out flex flex-col 
+                    ${isFeatured ? 'border-primary/40 bg-primary/5' : 'border-text/10 bg-background/50 hover:border-text/20'} 
+                    ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
+      style={{ transitionDelay: `${inView ? animationDelay : 0}ms` }}
+    >
       {/* Background Grid Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] z-0"/>
       
@@ -96,6 +111,25 @@ const Pricing = () => {
     "Suporte e manutenção prioritários (90 dias)"
   ];
 
+  const { ref: footerRef, inView: footerInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.5,
+  });
+  const [startFooterTyping, setStartFooterTyping] = useState(false);
+
+  useEffect(() => {
+    let timer: number | null = null;
+    if (footerInView) {
+      const lastCardDelay = 2 * 150;
+      const lastCardDuration = 700;
+      const totalDelay = lastCardDelay + lastCardDuration + 300;
+      timer = setTimeout(() => {
+        setStartFooterTyping(true);
+      }, totalDelay); 
+    }
+    return () => { if(timer) clearTimeout(timer); };
+  }, [footerInView]);
+
   return (
     <section id="investimento" className="py-24 lg:py-32 bg-background/80 scroll-mt-20 relative overflow-hidden">
       {/* Background Elements */}
@@ -135,23 +169,43 @@ const Pricing = () => {
             title="VANT BASICS" 
             price="R$ 3.500"
             features={vantBasicsFeatures}
+            index={0}
           />
           <PricingCard 
             title="VANT PRO" 
             price="R$ 7.900"
             features={vantProFeatures}
-            isFeatured={true} // Highlight the PRO plan
+            isFeatured={true}
+            index={1}
           />
           <PricingCard 
             title="BLACK OPS" 
             price="Sob Consulta"
             features={blackOpsFeatures}
+            index={2}
           />
         </div>
         
          {/* Optional: Add notes or contact links below */}
-         <div className="text-center mt-12 font-mono text-xs text-text/40">
-            Condições de pagamento flexíveis disponíveis. Entre em contato para discutir necessidades específicas ou o plano Black Ops.
+         <div 
+           ref={footerRef}
+           className="text-center mt-12 font-mono text-xs text-text/40 h-5"
+         >
+            {startFooterTyping ? (
+              <TypeAnimation
+                sequence={[
+                  'Condições de pagamento flexíveis disponíveis. Entre em contato para discutir necessidades específicas ou o plano Black Ops.'
+                ]}
+                wrapper="span"
+                speed={80}
+                cursor={false}
+                repeat={0}
+              />
+            ) : (
+              <span className="invisible">
+                Condições de pagamento flexíveis disponíveis. Entre em contato para discutir necessidades específicas ou o plano Black Ops.
+              </span>
+            )}
          </div>
       </div>
     </section>

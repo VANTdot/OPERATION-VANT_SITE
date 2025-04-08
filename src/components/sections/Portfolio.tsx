@@ -1,4 +1,7 @@
 import { ArrowUpRight, CircleNotch } from '@phosphor-icons/react';
+import { useInView } from 'react-intersection-observer';
+import { useState, useEffect } from 'react';
+import { TypeAnimation } from 'react-type-animation';
 
 interface PortfolioItemProps {
   title: string;
@@ -98,9 +101,54 @@ const PortfolioItem = ({ title, sector, result, image, status = "ACTIVE", code =
   </div>
 );
 
+const portfolioData = [
+  {
+    title: "UpSummit",
+    sector: "Evento Empresarial",
+    result: "Palco para Joel Jota, Paulo Vieira, Pablo Marçal e mais.",
+    image: "https://minio-minio.m7nkeb.easypanel.host/vant/portfolio/upsummit.png",
+    status: "DELIVERED",
+    code: "UPS-01",
+    link: "https://upsummit.netlify.app/",
+  },
+  {
+    title: "D14 Basketball Academy",
+    sector: "Formação Esportiva de Elite",
+    result: "Fundada por ex-jogador e atual comentarista da Band.",
+    image: "https://minio-minio.m7nkeb.easypanel.host/vant/portfolio/d14.png",
+    status: "ACTIVE",
+    code: "D14-02",
+    link: "https://d14basketballacademy.com.br",
+  },
+];
+
 const Portfolio = () => {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  const [startDetailTyping, setStartDetailTyping] = useState(false);
+
+  useEffect(() => {
+    let timer: number | null = null;
+    if (inView) {
+      const lastItemAnimEndTime = ((portfolioData.length - 1) * 150) + 300 + 500;
+      const typingDelay = lastItemAnimEndTime + 200;
+
+      timer = setTimeout(() => {
+        setStartDetailTyping(true);
+      }, typingDelay);
+    }
+    return () => { if (timer) clearTimeout(timer); };
+  }, [inView]);
+
   return (
-    <section id="portfolio" className="min-h-screen bg-background/50 scroll-mt-20 relative overflow-hidden flex items-center">
+    <section 
+      ref={ref}
+      id="portfolio" 
+      className="min-h-screen bg-background/50 scroll-mt-20 relative overflow-hidden flex items-center"
+    >
       {/* Technical Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Grid Pattern Top Right */}
@@ -123,8 +171,12 @@ const Portfolio = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-20 w-full">
-        {/* Section Header */}
-        <div className="mb-16 relative">
+        {/* Section Header - Add animation */}
+        <div 
+          className={`mb-16 relative transition-all duration-700 ease-in-out ${
+            inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+          }`}
+        >
           <div className="flex items-center mb-4">
             <div className="w-4 h-[2px] bg-primary/40 mr-2" />
             <span className="font-mono text-sm text-primary/40">OPERATION: VANT_RESULTS</span>
@@ -137,40 +189,58 @@ const Portfolio = () => {
           </h2>
         </div>
 
-        {/* Portfolio Grid - Adjusted for 2 items */}
+        {/* Portfolio Grid - Add animation to items */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-          <PortfolioItem
-            title="UpSummit"
-            sector="Evento Empresarial"
-            result="Palco para Joel Jota, Paulo Vieira, Pablo Marçal e mais."
-            image="https://minio-minio.m7nkeb.easypanel.host/vant/portfolio/upsummit.png"
-            status="DELIVERED"
-            code="UPS-01"
-            link="https://upsummit.netlify.app/"
-          />
-          <PortfolioItem
-            title="D14 Basketball Academy"
-            sector="Formação Esportiva de Elite"
-            result="Fundada por ex-jogador e atual comentarista da Band."
-            image="https://minio-minio.m7nkeb.easypanel.host/vant/portfolio/d14.png"
-            status="ACTIVE"
-            code="D14-02"
-            link="https://d14basketballacademy.com.br"
-          />
+          {portfolioData.map((item, index) => (
+            <div
+              key={`${item.code}-wrapper`}
+              className={`transition-all duration-500 ease-in-out ${
+                inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+              }`}
+              style={{ transitionDelay: `${inView ? index * 150 + 300 : 0}ms` }}
+            >
+              <PortfolioItem {...item} />
+            </div>
+          ))}
         </div>
 
-        {/* Bottom Technical Element - Hidden on mobile */}
-        <div className="absolute bottom-8 left-8 font-mono text-xs text-text/5 hidden sm:block">
-          <div className="space-y-1">
-            <div className="flex items-center">
-              <div className="w-2 h-2 border border-text/5 mr-2" />
-              <span>PROJECTS: 100% SUCCESS RATE</span>
+        {/* Bottom Technical Element - Typing animation */}
+        <div className="absolute bottom-8 left-8 font-mono text-xs text-text/10 hidden sm:block">
+          {startDetailTyping ? (
+            <div className="space-y-1">
+              <div className="flex items-center h-4">
+                <div className="w-2 h-2 border border-text/10 mr-2" />
+                <TypeAnimation
+                  sequence={['PROJECTS: 100% SUCCESS RATE']}
+                  wrapper="span"
+                  speed={70}
+                  cursor={true}
+                  repeat={0}
+                />
+              </div>
+              <div className="flex items-center h-4">
+                <div className="w-2 h-2 border border-text/10 mr-2" />
+                <TypeAnimation
+                  sequence={[100, 'AVG PERFORMANCE: +65%']}
+                  wrapper="span"
+                  speed={70}
+                  cursor={true}
+                  repeat={0}
+                />
+              </div>
             </div>
-            <div className="flex items-center">
-              <div className="w-2 h-2 border border-text/5 mr-2" />
-              <span>AVG PERFORMANCE: +65%</span>
+          ) : (
+            <div className="space-y-1 invisible">
+              <div className="flex items-center h-4">
+                <div className="w-2 h-2 border border-text/10 mr-2" />
+                <span>PROJECTS: 100% SUCCESS RATE</span>
+              </div>
+              <div className="flex items-center h-4">
+                <div className="w-2 h-2 border border-text/10 mr-2" />
+                <span>AVG PERFORMANCE: +65%</span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </section>

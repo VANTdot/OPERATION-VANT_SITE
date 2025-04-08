@@ -1,48 +1,76 @@
 import { User, Palette, RocketLaunch, Target, ChartLineUp, Power, Code, ArrowsClockwise } from '@phosphor-icons/react';
 import { useInView } from 'react-intersection-observer';
+import { useState, useEffect } from 'react';
+import { TypeAnimation } from 'react-type-animation';
 
-// Restore the DifferentialItem component structure
+// DifferentialItem component now handles its own animation trigger
 const DifferentialItem = ({ 
     icon: Icon, 
-    title, // Use title for the main text
-    // description, // Remove description if not needed or use code as description?
-    code,     // Use code here
-    inView, 
-    delay 
+    title, 
+    code
 }: { 
     icon: any; 
     title: string; 
-    // description: string; 
     code: string;
-    inView: boolean; 
-    delay: string; 
-}) => (
-  <div 
-    className={`border border-text/10 p-6 transition-all duration-500 ease-in-out ${delay} ${
-      inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-    }`}
-  >
-    <div className="flex items-center mb-3"> {/* Reduced bottom margin */}
-      <div className="p-3 bg-primary/10 border border-primary/20 mr-4">
-        <Icon className="w-6 h-6 text-primary" />
-      </div>
-      {/* Main text from user list */}
-      <h3 className="text-lg font-semibold text-text">{title}</h3> 
-    </div>
-     {/* Code below title */}
-    <p className="font-mono text-sm text-primary/60 pl-[64px]">{code}</p> 
-    {/* <p className="text-text/70 text-sm mt-2">{description}</p> */}
-  </div>
-);
-
-// Main section component
-const Differentials = () => {
+}) => {
+  // Observer for the item itself
   const { ref, inView } = useInView({
     triggerOnce: true,
-    threshold: 0.1,
+    threshold: 0.25, // Trigger when 25% of the item is visible
   });
 
-  // Use the user's titles and codes
+  // State to trigger typing animation
+  const [startTyping, setStartTyping] = useState(false);
+
+  // Trigger typing after the card becomes visible
+  useEffect(() => {
+    let timer: number | null = null;
+    if (inView) {
+      // Delay typing slightly after card starts appearing (duration is 500ms)
+      timer = setTimeout(() => {
+        setStartTyping(true);
+      }, 400);
+    }
+    return () => { if (timer) clearTimeout(timer); };
+  }, [inView]);
+
+  return (
+    <div 
+      ref={ref} // Attach observer ref here
+      // Card entrance animation controlled by its own inView state
+      className={`border border-text/10 p-6 transition-all duration-500 ease-in-out ${
+        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+      }`}
+    >
+      <div className="flex items-center mb-3"> 
+        <div className="p-3 bg-primary/10 border border-primary/20 mr-4">
+          <Icon className="w-6 h-6 text-primary" />
+        </div>
+        <h3 className="text-lg font-semibold text-text">{title}</h3> 
+      </div>
+      {/* Code below title - Animate with Typing */}
+      <div className="font-mono text-sm text-primary/60 pl-[64px] h-5"> {/* Fixed height */}
+        {startTyping ? (
+          <TypeAnimation
+            key={code} // Add key to ensure re-trigger if needed (though triggerOnce is on)
+            sequence={[code]}
+            wrapper="span"
+            speed={70}
+            cursor={false} // No cursor usually needed here
+            repeat={0}
+          />
+        ) : (
+          <span className="invisible">{code}</span> // Placeholder
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Main section component - Remove main observer and props passing
+const Differentials = () => { 
+  // Removed main useInView hook
+
   const differentialsData = [
     { icon: User, title: "Atendimento 1:1 Foco Total", code: "DIF-001" },
     { icon: Palette, title: "Design Exclusivo Sem Templates", code: "DIF-002" },
@@ -54,7 +82,7 @@ const Differentials = () => {
 
   return (
     <section 
-      ref={ref} 
+      // Removed ref from section
       id="differentials-section" 
       className="py-24 lg:py-32 bg-background relative overflow-hidden scroll-mt-20"
     >
@@ -81,29 +109,26 @@ const Differentials = () => {
 
       {/* === Main Content === */}
       <div className="max-w-7xl mx-auto px-4 w-full relative z-10">
-        {/* Section Header - Animated */}
-        <div 
-           className={`mb-16 text-center transition-all duration-700 ease-in-out ${
-             inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-           }`}
-        >
+        {/* Section Header - Keep its animation (if needed, could also have its own observer) */}
+        {/* For simplicity, let's assume it animates based on section visibility (requires adding observer back) */}
+        {/* OR remove animation from header if individual item animation is enough */}
+        {/* Let's keep it simple for now and remove header animation */}
+        <div className="mb-16 text-center">
           <span className="font-mono text-sm text-primary/50 tracking-widest">// NOSSOS PILARES</span>
           <h2 className="text-4xl lg:text-5xl font-bold text-text mt-3">
             Diferenciais VANT<span className="text-primary">.</span>
           </h2>
         </div>
 
-        {/* Differentials Grid - Using DifferentialItem */}
+        {/* Differentials Grid - Items handle their own animation */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {differentialsData.map((item, index) => (
-            // Use DifferentialItem with the updated data structure
+          {differentialsData.map((item) => (
+            // Pass data, no animation props needed here
             <DifferentialItem 
               key={item.code} 
               icon={item.icon}
               title={item.title} 
               code={item.code} 
-              inView={inView} 
-              delay={`delay-[${index * 150 + 300}ms]`} 
             />
           ))}
         </div>
