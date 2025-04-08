@@ -1,17 +1,123 @@
 import { Target, Gauge, Lightning } from '@phosphor-icons/react';
+import { useState, useEffect, useRef } from 'react';
+import { TypeAnimation } from 'react-type-animation';
+import { useInView } from 'react-intersection-observer';
 
-const DetailItem = ({ label, value, unit }: { label: string; value: string; unit?: string }) => (
-  <div className="border border-text/10 p-3">
-    <div className="font-mono text-xs text-primary/50 mb-1">{label}</div>
-    <div className="font-bold text-lg text-text">{value}<span className="text-xs text-text/50 ml-1">{unit}</span></div>
-  </div>
-);
+const DetailItem = ({ 
+  label, 
+  value, 
+  unit, 
+  inView, 
+  startDelay 
+}: { 
+  label: string; 
+  value: string; 
+  unit?: string; 
+  inView: boolean;
+  startDelay: number; 
+}) => {
+  const [displayValue, setDisplayValue] = useState<string | null>(null);
+  const intervalRef = useRef<number | null>(null);
+  const timeoutRef = useRef<number | null>(null);
+
+  const finalValue = value + (unit || '');
+  const isNumeric = !isNaN(parseFloat(value));
+  const valueLength = value.length;
+
+  const getRandomChar = () => {
+    const chars = isNumeric 
+      ? '0123456789.' // Allow dot for numeric values
+      : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*#$%';
+    return chars[Math.floor(Math.random() * chars.length)];
+  };
+
+  const generateRandomValue = () => {
+    let random = '';
+    for (let i = 0; i < valueLength; i++) {
+      random += getRandomChar();
+    }
+    // Keep unit separate during randomization unless it's % for precision
+    if (label === 'PRECISION' && unit === '%') {
+       return random + unit;
+    } else if (label === 'SPEED' && unit === 's') {
+       return random + unit;
+    }
+    return random;
+    // return value === 'MAX' ? random : random + (unit || '');
+  };
+
+  useEffect(() => {
+    const cleanup = () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+
+    if (inView) {
+      timeoutRef.current = window.setTimeout(() => {
+        // Start interval - Slower update speed
+        intervalRef.current = window.setInterval(() => {
+          setDisplayValue(generateRandomValue());
+        }, 80); // Increased from 50ms
+
+        // Stop interval and set final value - Longer duration
+        timeoutRef.current = window.setTimeout(() => {
+          if (intervalRef.current) clearInterval(intervalRef.current);
+          setDisplayValue(finalValue);
+        }, 700); // Increased from 400ms
+
+      }, startDelay);
+
+    } 
+    // else { // Optional: Reset if element scrolls out of view 
+    //   cleanup();
+    //   setDisplayValue(null);
+    // }
+
+    return cleanup;
+
+  }, [inView, startDelay, finalValue, label, unit, valueLength]); // Added dependencies that generateRandomValue uses
+
+  return (
+    <div className="border border-text/10 p-3"> 
+      <div className="font-mono text-xs text-primary/50 mb-1">{label}</div>
+      <div className="font-bold text-lg text-text h-6 overflow-hidden"> 
+         {displayValue !== null ? (
+            <span>{displayValue}</span>
+         ) : (
+            <span className="invisible">{finalValue}</span> 
+         )}
+      </div>
+    </div>
+  );
+};
 
 const About = () => {
+  const [startHeaderTyping, setStartHeaderTyping] = useState(false);
+
+  const { ref, inView } = useInView({
+    triggerOnce: true, 
+    threshold: 0.2,
+  });
+
+  useEffect(() => {
+    let headerTimer: number | null = null;
+
+    if (inView) {
+      headerTimer = setTimeout(() => {
+        setStartHeaderTyping(true);
+      }, 300); 
+    }
+
+    return () => {
+      if (headerTimer) window.clearTimeout(headerTimer);
+    }
+  }, [inView]);
+
   return (
     <section 
+      ref={ref} 
       id="sobre" 
-      className="min-h-screen bg-background relative overflow-hidden flex items-center py-20"
+      className="transform min-h-screen bg-background relative overflow-hidden flex items-center py-20"
     >
       {/* Enhanced Background Elements */}
       <div className="absolute inset-0 pointer-events-none select-none opacity-70">
@@ -57,17 +163,28 @@ const About = () => {
               <h2 className="text-[10vw] md:text-[8vw] lg:text-[7rem] font-black leading-none text-text relative z-10">
                 Sobre<span className="text-primary">.</span>
               </h2>
-              <div className="flex gap-4 items-center mt-4 pl-1 sm:pl-2">
+              <div className="flex gap-4 items-center mt-4 pl-1 sm:pl-2 h-5">
                 <div className="h-[2px] w-16 bg-primary/50" />
-                <span className="font-mono text-sm text-text/60 uppercase tracking-wider">Digital Operations Unit</span>
+                {startHeaderTyping ? (
+                  <TypeAnimation
+                    sequence={['Digital Operations Taskforce']}
+                    wrapper="span"
+                    speed={60}
+                    className="font-mono text-sm text-text/60 uppercase tracking-wider"
+                    cursor={true}
+                    repeat={0}
+                  />
+                ) : (
+                  <span className="font-mono text-sm text-text/60 uppercase tracking-wider invisible">Digital Operations Taskforce</span> 
+                )}
               </div>
             </div>
 
             {/* Integrated Detail Grid */}
             <div className="grid grid-cols-3 gap-4 font-mono text-sm">
-                <DetailItem label="PRECISION" value="99.8" unit="%" />
-                <DetailItem label="SPEED" value="1.2" unit="s" />
-                <DetailItem label="POWER" value="MAX" />
+                <DetailItem label="PRECISION" value="99.8" unit="%" inView={inView} startDelay={1800} />
+                <DetailItem label="SPEED" value="1.2" unit="s" inView={inView} startDelay={2000} />
+                <DetailItem label="POWER" value="MAX" inView={inView} startDelay={2200} />
             </div>
           </div>
 

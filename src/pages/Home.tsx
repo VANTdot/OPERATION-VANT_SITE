@@ -23,7 +23,6 @@ const CTAButton = ({ children, href }: { children: string; href?: string }) => {
       </a>
     );
   } else {
-    // Original button logic if needed elsewhere, otherwise can be removed
     return (
       <button className={commonClasses}>
         <span className="relative z-10 flex items-center">
@@ -44,15 +43,12 @@ const Home = () => {
   const [startTyping, setStartTyping] = useState(false);
 
   useEffect(() => {
-    // Trigger hero visibility shortly after mount
     const heroTimer = setTimeout(() => {
       setIsHeroVisible(true);
     }, 150);
-
-    // Trigger typing animation after main content animation starts
     const typingTimer = setTimeout(() => {
        setStartTyping(true);
-    }, 500); // Delay should be after main content starts animating (delay-200)
+    }, 500);
 
     return () => {
       clearTimeout(heroTimer);
@@ -73,7 +69,7 @@ const Home = () => {
           <div className="absolute top-0 left-0 w-16 h-16 border-l border-t border-text/10 opacity-50" />
           <div className="absolute bottom-0 right-0 w-16 h-16 border-r border-b border-text/10 opacity-50" />
 
-          {/* Technical markings - Typing animation */}
+          {/* Technical markings - Typing animation with cursor */}
           {startTyping && (
             <div 
               className="absolute top-4 sm:top-8 right-4 sm:right-8 text-xs font-mono text-text/10 hidden sm:block"
@@ -83,13 +79,13 @@ const Home = () => {
                   'SYS_REF: HERO.VNT.25\nSTATUS: ONLINE\nSEC_LVL: ALPHA',
                 ]}
                 wrapper="div"
-                speed={70} // Adjust typing speed (lower is faster)
+                speed={70} 
                 style={{ whiteSpace: 'pre-line', display: 'inline-block' }}
-                cursor={false} // Hide cursor after typing
+                cursor={true} // Keep cursor blinking
               />
             </div>
           )}
-          {/* Technical markings - Typing animation - Adjusted position */}
+          {/* Technical markings - Typing animation with cursor - Adjusted position */}
           {startTyping && (
             <div 
               className="absolute bottom-12 sm:bottom-16 left-4 sm:left-8 text-xs font-mono text-text/10 hidden sm:block"
@@ -99,9 +95,9 @@ const Home = () => {
                   'COORD: 23.55S/46.63W\nSIGNAL: STRONG\nGRID: H23KML0549',
                 ]}
                 wrapper="div"
-                speed={70} // Adjust typing speed
+                speed={70} 
                 style={{ whiteSpace: 'pre-line', display: 'inline-block' }}
-                cursor={false}
+                cursor={true} // Keep cursor blinking
                 />
             </div>
           )}
