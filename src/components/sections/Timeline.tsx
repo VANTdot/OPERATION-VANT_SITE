@@ -1,4 +1,6 @@
 import { ArrowsClockwise } from '@phosphor-icons/react';
+import { useState, useEffect } from 'react';
+import { TypeAnimation } from 'react-type-animation';
 import { useInView } from 'react-intersection-observer';
 
 const timelineData = [
@@ -9,51 +11,125 @@ const timelineData = [
   { phase: "Validação e Go-Live", duration: "T+7 Dias", step: "05" },
 ];
 
-const TimelineNode = ({ phase, duration, step, isLeft, index }: { phase: string; duration: string; step: string; isLeft: boolean; index: number }) => {
-  const { ref, inView } = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
+const TimelineNode = ({ 
+  phase, 
+  duration, 
+  step, 
+  isLeft, 
+  isActive, 
+  onAnimationComplete 
+}: { 
+  phase: string; 
+  duration: string; 
+  step: string; 
+  isLeft: boolean; 
+  isActive: boolean; 
+  onAnimationComplete: () => void; 
+}) => {
+  const [typingComplete, setTypingComplete] = useState(false);
 
-  const animationDelay = index * 150;
+  useEffect(() => {
+    if (!isActive) {
+      setTypingComplete(false);
+    }
+  }, [isActive]);
+
+  const handleTypingComplete = () => {
+    setTimeout(() => {
+      setTypingComplete(true);
+      if (onAnimationComplete) {
+        setTimeout(() => {
+           onAnimationComplete();
+        }, 50);
+      }
+    }, 50);
+  };
 
   return (
     <div 
-      ref={ref}
-      className={`relative flex items-center w-full mb-10 md:${isLeft ? 'justify-start' : 'justify-end'} transition-all duration-700 ease-out ${
-        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+      className={`relative flex items-center w-full mb-10 md:${isLeft ? 'justify-start' : 'justify-end'} transition-opacity duration-500 ease-out ${
+        isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
-      style={{ transitionDelay: `${inView ? animationDelay : 0}ms` }}
     >
       {/* Node Content Box */}
       <div className={`relative w-full md:w-5/12 p-4 border border-text/10 bg-background/80 group 
                      md:${isLeft ? 'pr-8' : 'pl-8'}
                      transition-all duration-300 hover:border-primary/30 hover:bg-background/90`}>
-        {/* Step Number */}
-        <div className={`absolute top-2 font-mono text-3xl text-primary/10 group-hover:text-primary/20 transition-colors right-3`}>
+        {/* Step Number - Highlight changes on typingComplete */}
+        <div className={`absolute top-2 font-mono text-3xl transition-colors duration-500 ease-in-out right-3 ${ 
+            typingComplete ? 'text-primary/50' : 'text-primary/10' 
+          } group-hover:text-primary/30`}>
           {step}
         </div>
         {/* Content */}
-        <h3 className="text-md font-semibold text-text/80 group-hover:text-text transition-colors mb-1">{phase}</h3>
+        <div className="h-6 mb-1 overflow-hidden">
+            {isActive ? (
+                <TypeAnimation
+                    key={step} 
+                    sequence={[phase, handleTypingComplete]} 
+                    wrapper="h3"
+                    speed={80}
+                    className="text-md font-semibold text-text/80 group-hover:text-text transition-colors"
+                    cursor={false} 
+                    repeat={0}
+                />
+            ) : (
+                <h3 className="text-md font-semibold text-text/80 invisible">{phase}</h3>
+            )}
+        </div>
         <p className="text-xs font-mono text-primary/50 group-hover:text-primary/70 transition-colors">{duration}</p>
-        {/* Decorative corner - hidden on mobile, absolute on md+ */}
+        {/* Decorative corner */}
         <div className={`absolute hidden md:block w-3 h-3 border-primary/20 group-hover:border-primary/40 transition-colors 
                          ${isLeft ? 'bottom-[-1px] left-[-1px] border-b border-l' : 'top-[-1px] right-[-1px] border-t border-r'}`}/> 
       </div>
 
-      {/* Connector Line & Circle - hidden on mobile, absolute on md+ */}
-      <div className={`absolute hidden md:block w-1/2 md:w-[8.33%] h-[2px] 
+      {/* Connector Line & Circle */}
+      <div className={`absolute hidden md:block w-1/2 md:w-[8.33%] h-[2px] transition-opacity duration-300 delay-200 
                      ${isLeft ? 'left-1/2 bg-gradient-to-r' : 'right-1/2 bg-gradient-to-l'} 
-                     from-transparent via-text/10 to-text/10`} />
-      <div className={`absolute hidden md:block w-3 h-3 rounded-full border-2 border-text/10 bg-background group-hover:border-primary/50 transition-colors 
-                     ${isLeft ? 'left-1/2 -translate-x-1/2' : 'right-1/2 translate-x-1/2'}`} />
+                     from-transparent via-text/10 to-text/10 ${isActive ? 'opacity-100' : 'opacity-0'}`} />
+      <div className={`absolute hidden md:block w-3 h-3 rounded-full border-2 border-text/10 bg-background group-hover:border-primary/50 transition-all duration-300 delay-200 
+                     ${isLeft ? 'left-1/2 -translate-x-1/2' : 'right-1/2 translate-x-1/2'} ${isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`} />
     </div>
   );
 };
 
 const Timeline = () => {
+  // State to track the index of the currently animating item
+  const [activeItemIndex, setActiveItemIndex] = useState<number>(-1); // Start at -1 (none active)
+
+  // Observer for the whole timeline section
+  const { ref: sectionRef, inView: sectionInView } = useInView({
+    triggerOnce: true, // Only trigger once when it enters view
+    threshold: 0.2, // Trigger when 20% of the section is visible
+  });
+
+  // Effect to start the animation sequence when the section is in view
+  useEffect(() => {
+    if (sectionInView && activeItemIndex === -1) {
+      // Start with the first item (index 0)
+      setActiveItemIndex(0);
+    }
+    // We don't reset if it goes out of view because triggerOnce is true
+  }, [sectionInView, activeItemIndex]);
+
+  // Callback passed to TimelineNode
+  const handleNodeAnimationComplete = () => {
+    setActiveItemIndex((prevIndex) => {
+      // If there's a next item, activate it. Otherwise, stay on the last item.
+      if (prevIndex < timelineData.length - 1) {
+        return prevIndex + 1;
+      } else {
+        return prevIndex; // Keep last item active
+      }
+    });
+  };
+
   return (
-    <section id="processo" className="relative py-24 lg:py-32 bg-background scroll-mt-20 overflow-hidden">
+    <section 
+      ref={sectionRef} // Attach observer ref to the section
+      id="processo" 
+      className="relative py-24 lg:py-32 bg-background scroll-mt-20 overflow-hidden"
+    >
         {/* Background Elements */}
       <div className="absolute inset-0 pointer-events-none select-none opacity-70">
         {/* Grid Pattern */}
@@ -91,13 +167,16 @@ const Timeline = () => {
            {/* Central Vertical Line - Hidden on mobile */}
           <div className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-text/10 to-transparent -translate-x-1/2 hidden md:block"></div>
 
-          {/* Timeline Nodes */}
+          {/* Timeline Nodes - Pass isActive and onAnimationComplete */}
           {timelineData.map((item, index) => (
             <TimelineNode 
               key={item.step} 
               {...item} 
               isLeft={index % 2 === 0}
-              index={index}
+              // isActive is true if this item's index is less than or equal to the current active index
+              isActive={index <= activeItemIndex} 
+              // Pass the callback function to trigger the next item
+              onAnimationComplete={handleNodeAnimationComplete}
             />
           ))}
         </div>

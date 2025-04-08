@@ -9,20 +9,11 @@ const PricingCard = ({ title, price, features, isFeatured = false, index }: { ti
   const message = encodeURIComponent(`Olá! Tenho interesse no plano ${title}. Podemos conversar?`);
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
 
-  const { ref, inView } = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
-
-  const animationDelay = index * 150;
-
   return (
     <div 
-      ref={ref}
-      className={`relative border p-8 group overflow-hidden transition-all duration-700 ease-out flex flex-col 
+      className={`relative border p-8 group overflow-hidden flex flex-col 
                     ${isFeatured ? 'border-primary/40 bg-primary/5' : 'border-text/10 bg-background/50 hover:border-text/20'} 
-                    ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
-      style={{ transitionDelay: `${inView ? animationDelay : 0}ms` }}
+                    transition-colors duration-300`}
     >
       {/* Background Grid Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] z-0"/>
@@ -120,12 +111,9 @@ const Pricing = () => {
   useEffect(() => {
     let timer: number | null = null;
     if (footerInView) {
-      const lastCardDelay = 2 * 150;
-      const lastCardDuration = 700;
-      const totalDelay = lastCardDelay + lastCardDuration + 300;
       timer = setTimeout(() => {
         setStartFooterTyping(true);
-      }, totalDelay); 
+      }, 300);
     }
     return () => { if(timer) clearTimeout(timer); };
   }, [footerInView]);

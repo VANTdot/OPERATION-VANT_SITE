@@ -85,16 +85,20 @@ const ServiceCard = ({
 
           {/* === Middle Section (Icon & Title) === */}
           <div className="flex items-center mb-6 space-x-4">
-            {/* Icon Container with Angular Shape */}
-            <div className="relative w-16 h-16">
-              {/* Background Shape - Removed skew */}
+            {/* Icon Container with Angular Shape & Scanner Effect */}
+            <div className="relative w-16 h-16 flex-shrink-0 group/icon">
+              {/* Background Shape */}
               <div className="absolute inset-0 bg-primary/5 border border-primary/20 transition-colors duration-300 group-hover:bg-primary/10 group-hover:border-primary/30"></div>
               {/* Icon */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <Icon className="w-8 h-8 text-primary group-hover:scale-110 transition-transform duration-300" weight="light" />
               </div>
-               {/* Corner Accent */}
+               {/* Corner Accent - Re-added */}
                <div className="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-primary/40 group-hover:border-primary/60 transition-colors"></div>
+               {/* Scanner Line Element */}
+               <div 
+                 className="absolute top-0 left-0 w-full h-[3px] bg-primary/70 opacity-0 group-hover:opacity-100 group-hover:animate-scan-vertical z-10"
+               ></div>
             </div>
             {/* Title */}
             <h3 className="text-xl font-bold text-text flex-grow">{title}</h3>
@@ -170,14 +174,31 @@ const servicesData = [
 ];
 
 const Services = () => {
-  const { ref, inView } = useInView({
+  // Main observer for the cards internal animations (keep this)
+  const { ref: gridRef, inView: gridInView } = useInView({
     triggerOnce: true,
-    threshold: 0.1,
+    threshold: 0.1, 
   });
+
+  // Separate observer for the header typing animation
+  const { ref: headerRef, inView: headerInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.5, // Trigger when header is more visible
+  });
+  const [startHeaderTyping, setStartHeaderTyping] = useState(false);
+
+  useEffect(() => {
+    let timer: number | null = null;
+    if (headerInView) {
+      timer = setTimeout(() => {
+        setStartHeaderTyping(true);
+      }, 300); // Small delay after header becomes visible
+    }
+    return () => { if (timer) clearTimeout(timer); };
+  }, [headerInView]);
 
   return (
     <section 
-      ref={ref}
       id="servicos" 
       className="min-h-screen bg-background/50 scroll-mt-20 relative overflow-hidden flex flex-col justify-center py-24 lg:py-32"
     >
@@ -209,15 +230,25 @@ const Services = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 w-full relative z-20">
-        {/* Section Header - Animate this container */}
+        {/* Section Header - Remove fade-in from title container */}
         <div 
-          className={`mb-20 lg:mb-24 relative text-center transition-all duration-700 ease-in-out ${
-            inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-          }`}
+          ref={headerRef}
+          className="mb-20 lg:mb-24 relative text-center"
         >
-           {/* Operation Line Above Title */}
-          <div className="flex items-center justify-center mb-4">
-            <span className="font-mono text-sm text-primary/50 tracking-widest">// VANT SERVICE PROTOCOLS</span>
+           {/* Operation Line Above Title - Add Typing Animation here */}
+          <div className="flex items-center justify-center mb-4 h-5">
+            {startHeaderTyping ? (
+              <TypeAnimation
+                sequence={['// VANT SERVICE PROTOCOLS']}
+                wrapper="span"
+                speed={60}
+                className="font-mono text-sm text-primary/50 tracking-widest"
+                cursor={true}
+                repeat={0}
+              />
+            ) : (
+              <span className="font-mono text-sm text-primary/50 tracking-widest invisible">// VANT SERVICE PROTOCOLS</span>
+            )}
           </div>
           {/* Large Title Style */}
           <h2 className="text-[10vw] md:text-[8vw] lg:text-[7rem] font-black leading-none text-text relative z-10">
@@ -225,21 +256,17 @@ const Services = () => {
           </h2>
         </div>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+        {/* Services Grid - Attach gridRef here */}
+        <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
           {servicesData.map((service, index) => (
             <div
               key={`${service.code}-wrapper`}
-              className={`transition-all duration-500 ease-in-out ${
-                inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-              }`}
-              style={{ transitionDelay: `${inView ? index * 150 + 300 : 0}ms` }}
             >
               <ServiceCard 
                 key={service.code} 
                 {...service} 
-                inView={inView} 
-                startDelay={index * 150 + 900}
+                inView={gridInView}
+                startDelay={index * 150 + 600}
               />
             </div>
           ))}

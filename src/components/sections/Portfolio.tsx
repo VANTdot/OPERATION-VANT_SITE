@@ -123,29 +123,48 @@ const portfolioData = [
 ];
 
 const Portfolio = () => {
-  const { ref, inView } = useInView({
+  // Observer for Header Typing
+  const { ref: headerRef, inView: headerInView } = useInView({
     triggerOnce: true,
-    threshold: 0.1,
+    threshold: 0.5, 
   });
+  const [startHeaderTyping, setStartHeaderTyping] = useState(false);
 
-  const [startDetailTyping, setStartDetailTyping] = useState(false);
+  // Observer for Bottom Stats Typing
+  const { ref: statsRef, inView: statsInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.5,
+  });
+  const [startStatsTyping, setStartStatsTyping] = useState(false);
+  const [isFirstStatComplete, setIsFirstStatComplete] = useState(false); // State for sequencing
 
+  // Effect for Header Typing
   useEffect(() => {
-    let timer: number | null = null;
-    if (inView) {
-      const lastItemAnimEndTime = ((portfolioData.length - 1) * 150) + 300 + 500;
-      const typingDelay = lastItemAnimEndTime + 200;
-
-      timer = setTimeout(() => {
-        setStartDetailTyping(true);
-      }, typingDelay);
+    let headerTimer: number | null = null;
+    if (headerInView) {
+      headerTimer = setTimeout(() => {
+        setStartHeaderTyping(true);
+      }, 300);
     }
-    return () => { if (timer) clearTimeout(timer); };
-  }, [inView]);
+    return () => { if (headerTimer) clearTimeout(headerTimer); };
+  }, [headerInView]);
+
+  // Effect for Bottom Stats Typing (Reduced initial delay)
+  useEffect(() => {
+    let statsTimer: number | null = null;
+    if (statsInView && !startStatsTyping) { // Only run if not already started
+      // Estimate header typing duration (adjust as needed)
+      const headerTypingDuration = ('OPERATION: VANT_RESULTS'.length * 60) + 500; 
+      statsTimer = setTimeout(() => {
+        setStartStatsTyping(true);
+      }, headerTypingDuration + 50); // Reduced delay
+    }
+    return () => { if (statsTimer) clearTimeout(statsTimer); };
+    // Depend on statsInView and startStatsTyping to prevent re-triggering timeout
+  }, [statsInView, startStatsTyping]); 
 
   return (
     <section 
-      ref={ref}
       id="portfolio" 
       className="min-h-screen bg-background/50 scroll-mt-20 relative overflow-hidden flex items-center"
     >
@@ -171,15 +190,25 @@ const Portfolio = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-20 w-full">
-        {/* Section Header - Add animation */}
+        {/* Section Header - Remove entrance, add typing to prefix */}
         <div 
-          className={`mb-16 relative transition-all duration-700 ease-in-out ${
-            inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-          }`}
+          ref={headerRef}
+          className="mb-16 relative"
         >
-          <div className="flex items-center mb-4">
+          <div className="flex items-center mb-4 h-5">
             <div className="w-4 h-[2px] bg-primary/40 mr-2" />
-            <span className="font-mono text-sm text-primary/40">OPERATION: VANT_RESULTS</span>
+            {startHeaderTyping ? (
+               <TypeAnimation
+                 sequence={['OPERATION: VANT_RESULTS']}
+                 wrapper="span"
+                 speed={60}
+                 className="font-mono text-sm text-primary/40"
+                 cursor={true}
+                 repeat={0}
+               />
+             ) : (
+               <span className="font-mono text-sm text-primary/40 invisible">OPERATION: VANT_RESULTS</span>
+             )}
             <div className="w-4 h-[2px] bg-primary/40 ml-2" />
           </div>
           <h2 className="text-4xl font-bold text-text flex items-center">
@@ -189,15 +218,11 @@ const Portfolio = () => {
           </h2>
         </div>
 
-        {/* Portfolio Grid - Add animation to items */}
+        {/* Portfolio Grid - Remove wrapper animation */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-          {portfolioData.map((item, index) => (
+          {portfolioData.map((item) => (
             <div
               key={`${item.code}-wrapper`}
-              className={`transition-all duration-500 ease-in-out ${
-                inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-              }`}
-              style={{ transitionDelay: `${inView ? index * 150 + 300 : 0}ms` }}
             >
               <PortfolioItem {...item} />
             </div>
@@ -205,28 +230,39 @@ const Portfolio = () => {
         </div>
 
         {/* Bottom Technical Element - Typing animation */}
-        <div className="absolute bottom-8 left-8 font-mono text-xs text-text/10 hidden sm:block">
-          {startDetailTyping ? (
+        <div 
+          ref={statsRef}
+          className="absolute bottom-8 left-8 font-mono text-xs text-text/10 hidden sm:block"
+        >
+          {startStatsTyping ? (
             <div className="space-y-1">
+              {/* First Stat Line */}
               <div className="flex items-center h-4">
                 <div className="w-2 h-2 border border-text/10 mr-2" />
                 <TypeAnimation
-                  sequence={['PROJECTS: 100% SUCCESS RATE']}
+                  sequence={[
+                    'PROJECTS: 100% SUCCESS RATE',
+                    () => { setIsFirstStatComplete(true); } // Set flag when done
+                  ]}
                   wrapper="span"
                   speed={70}
-                  cursor={true}
+                  cursor={false} // No cursor for the first line
                   repeat={0}
                 />
               </div>
+              {/* Second Stat Line - Conditional Rendering */}
               <div className="flex items-center h-4">
                 <div className="w-2 h-2 border border-text/10 mr-2" />
-                <TypeAnimation
-                  sequence={[100, 'AVG PERFORMANCE: +65%']}
-                  wrapper="span"
-                  speed={70}
-                  cursor={true}
-                  repeat={0}
-                />
+                {isFirstStatComplete && ( // Only render when first line is complete
+                  <TypeAnimation
+                    sequence={['AVG PERFORMANCE: +95%']}
+                    wrapper="span"
+                    speed={70}
+                    cursor={true} // Cursor for the second line
+                    repeat={0}
+                  />
+                )}
+                {!isFirstStatComplete && <span className="invisible">AVG PERFORMANCE: +95%</span>} {/* Placeholder */}
               </div>
             </div>
           ) : (
@@ -237,7 +273,7 @@ const Portfolio = () => {
               </div>
               <div className="flex items-center h-4">
                 <div className="w-2 h-2 border border-text/10 mr-2" />
-                <span>AVG PERFORMANCE: +65%</span>
+                <span>AVG PERFORMANCE: +95%</span>
               </div>
             </div>
           )}

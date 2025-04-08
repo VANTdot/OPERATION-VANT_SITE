@@ -35,33 +35,59 @@ const DifferentialItem = ({
   }, [inView]);
 
   return (
-    <div 
+    // Outer div for perspective and entrance animation
+    <div
       ref={ref} // Attach observer ref here
-      // Card entrance animation controlled by its own inView state
-      className={`border border-text/10 p-6 transition-all duration-500 ease-in-out ${
-        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+      className={`group [perspective:1000px] transition-opacity duration-500 ease-in-out ${
+        inView ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <div className="flex items-center mb-3"> 
-        <div className="p-3 bg-primary/10 border border-primary/20 mr-4">
-          <Icon className="w-6 h-6 text-primary" />
+      {/* Inner div for 3D rotation, border, shadow, padding, etc. */}
+      <div
+        className={`relative bg-background border border-text/10 p-6 transition-all duration-500 ease-in-out 
+                    group-hover:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] group-hover:border-primary/30 
+                    [transform-style:preserve-3d] group-hover:[transform:rotateY(4deg)_rotateX(2deg)] 
+                    ${inView ? 'translate-y-0' : 'translate-y-4'}`} // Apply translate-y animation here
+      >
+        {/* Background Grid Pattern */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] pointer-events-none"></div>
+
+        {/* Content Wrapper */}
+        <div className="relative z-10">
+          <div className="flex items-center mb-3">
+            {/* Icon Container with Scanner Effect */}
+            <div className="relative w-12 h-12 flex-shrink-0 group/icon mr-4">
+              {/* Background Shape */}
+              <div className="absolute inset-0 bg-primary/5 border border-primary/20 transition-colors duration-300 group-hover:bg-primary/10 group-hover:border-primary/30"></div>
+              {/* Icon */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Icon className="w-6 h-6 text-primary group-hover:scale-110 transition-transform duration-300" weight="light" />
+              </div>
+              {/* Corner Accent */}
+              <div className="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-primary/40 group-hover:border-primary/60 transition-colors"></div>
+              {/* Scanner Line Element */}
+              <div
+                className="absolute top-0 left-0 w-full h-[2px] bg-primary/70 opacity-0 group-hover:opacity-100 group-hover:animate-scan-vertical z-10"
+              ></div>
+            </div>
+            <h3 className="text-lg font-semibold text-text">{title}</h3>
+          </div>
+          {/* Code below title - Animate with Typing */}
+          <div className="font-mono text-sm text-primary/60 pl-[64px] h-5"> {/* 48px icon width + 16px mr-4 */}
+            {startTyping ? (
+              <TypeAnimation
+                key={code} // Add key to ensure re-trigger if needed (though triggerOnce is on)
+                sequence={[code]}
+                wrapper="span"
+                speed={70}
+                cursor={false} // No cursor usually needed here
+                repeat={0}
+              />
+            ) : (
+              <span className="invisible">{code}</span> // Placeholder
+            )}
+          </div>
         </div>
-        <h3 className="text-lg font-semibold text-text">{title}</h3> 
-      </div>
-      {/* Code below title - Animate with Typing */}
-      <div className="font-mono text-sm text-primary/60 pl-[64px] h-5"> {/* Fixed height */}
-        {startTyping ? (
-          <TypeAnimation
-            key={code} // Add key to ensure re-trigger if needed (though triggerOnce is on)
-            sequence={[code]}
-            wrapper="span"
-            speed={70}
-            cursor={false} // No cursor usually needed here
-            repeat={0}
-          />
-        ) : (
-          <span className="invisible">{code}</span> // Placeholder
-        )}
       </div>
     </div>
   );
