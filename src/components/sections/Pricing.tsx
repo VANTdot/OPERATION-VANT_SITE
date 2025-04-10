@@ -9,11 +9,32 @@ const PricingCard = ({ title, price, features, isFeatured = false, index }: { ti
   const message = encodeURIComponent(`Olá! Tenho interesse no plano ${title}. Podemos conversar?`);
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
 
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  const [startTyping, setStartTyping] = useState(false);
+
+  const animationDelay = index * 150;
+
+  useEffect(() => {
+    let timer: number | null = null;
+    if (inView) {
+      timer = setTimeout(() => {
+        setStartTyping(true);
+      }, animationDelay);
+    }
+    return () => { if (timer) clearTimeout(timer); };
+  }, [inView, animationDelay]);
+
   return (
     <div 
+      ref={ref}
       className={`relative border p-8 group overflow-hidden flex flex-col 
                     ${isFeatured ? 'border-primary/40 bg-primary/5' : 'border-text/10 bg-background/50 hover:border-text/20'} 
-                    transition-colors duration-300`}
+                    transition-all duration-700 ease-out ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+      style={{ transitionDelay: `${inView ? animationDelay : 0}ms` }}
     >
       {/* Background Grid Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] z-0"/>
@@ -22,20 +43,37 @@ const PricingCard = ({ title, price, features, isFeatured = false, index }: { ti
       <div className={`absolute top-0 right-0 w-6 h-6 border-t border-r transition-colors duration-300 
                      ${isFeatured ? 'border-primary/60' : 'border-primary/30 group-hover:border-primary/50'}`}></div>
 
-      {/* Featured Badge */}
-      {isFeatured && (
-        <div className="absolute top-4 left-4 flex items-center bg-primary/10 border border-primary/20 px-2 py-1 rounded-full">
-          <Star size={12} className="text-primary mr-1.5" weight="fill"/>
-          <span className="font-mono text-xs text-primary/80">MAIS POPULAR</span>
-        </div>
-      )}
-
-      <div className={`relative z-10 flex-grow ${isFeatured ? 'mt-10' : ''}`}> 
-        {/* Header with Logo */}
-        <div className="flex items-center mb-6">
-          {/* Replace Tag icon with img logo */}
-          <img src="https://minio-minio.m7nkeb.easypanel.host/vant/logovant2.png" alt="VANT Logo" className="h-5 mr-3" /> 
-          <h3 className={`text-xl font-bold ${isFeatured ? 'text-primary' : 'text-text group-hover:text-primary'} transition-colors duration-300`}>{title}</h3>
+      {/* Content Wrapper */}
+      <div className={`relative z-10 flex-grow`}> 
+        {/* Header with Logo, Title, and conditional Badge */}
+        <div className="flex items-center justify-between mb-6">
+          {/* Group for Logo and Title */}
+          <div className="flex items-center">
+            <img src="https://minio-minio.m7nkeb.easypanel.host/vant/logovant2.png" alt="VANT Logo" className="h-5 mr-3" /> 
+            <div className="h-7">
+              {startTyping ? (
+                 <TypeAnimation
+                    key={title}
+                    sequence={[title]}
+                    wrapper="h3"
+                    speed={50}
+                    className={`text-xl font-bold ${isFeatured ? 'text-primary' : 'text-text group-hover:text-primary'} transition-colors duration-300`}
+                    cursor={false}
+                    repeat={0}
+                  />
+              ) : (
+                <h3 className={`text-xl font-bold invisible ${isFeatured ? 'text-primary' : 'text-text group-hover:text-primary'}`}>{title}</h3>
+              )}
+            </div>
+          </div>
+          
+          {/* Featured Badge - Added negative margin */}
+          {isFeatured && (
+            <div className="flex items-center bg-primary/10 border border-primary/20 px-2 py-1 rounded-full -mr-2">
+              <Star size={12} className="text-primary mr-1.5" weight="fill"/>
+              <span className="font-mono text-xs text-primary/80">MAIS POPULAR</span>
+            </div>
+          )}
         </div>
 
         {/* Price */}

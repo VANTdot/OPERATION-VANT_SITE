@@ -8,6 +8,7 @@ import Pricing from '../components/sections/Pricing';
 import { ArrowRight } from '@phosphor-icons/react';
 import { useState, useEffect } from 'react';
 import { TypeAnimation } from 'react-type-animation';
+import { useInView } from 'react-intersection-observer';
 
 const CTAButton = ({ children, href }: { children: string; href?: string }) => {
   const commonClasses = "relative inline-flex items-center justify-center bg-primary px-8 py-4 text-base text-white group overflow-hidden border border-transparent hover:border-primary/50 transition-colors duration-300 font-medium";
@@ -42,6 +43,13 @@ const Home = () => {
   const [isHeroVisible, setIsHeroVisible] = useState(false);
   const [startTyping, setStartTyping] = useState(false);
 
+  // State and Ref for Contact Section animation
+  const [isContactVisible, setIsContactVisible] = useState(false);
+  const { ref: contactRef, inView: contactInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.2,
+  });
+
   useEffect(() => {
     const heroTimer = setTimeout(() => {
       setIsHeroVisible(true);
@@ -55,6 +63,19 @@ const Home = () => {
       clearTimeout(typingTimer);
     }
   }, []);
+
+  // Effect for Contact Section visibility ONLY
+  useEffect(() => {
+    let visibilityTimer: number | null = null;
+    if (contactInView) {
+      visibilityTimer = setTimeout(() => {
+        setIsContactVisible(true);
+      }, 200);
+    }
+    return () => {
+      if (visibilityTimer) clearTimeout(visibilityTimer);
+    };
+  }, [contactInView]);
   
   return (
     <div className="bg-background">
@@ -183,6 +204,7 @@ const Home = () => {
 
       {/* Enhanced CTA Section */}
       <section 
+        ref={contactRef}
         id="contato" 
         className="py-24 sm:py-40 scroll-mt-20 relative bg-gradient-to-b from-background/80 to-background overflow-hidden"
       >
@@ -194,18 +216,21 @@ const Home = () => {
           <div className="absolute bottom-0 right-0 w-1/4 h-full border-l border-text/5 transform -skew-x-12 origin-bottom-right opacity-30" />
         </div>
 
-        {/* Bottom Operation Code - Visible on all screens again */}
+        {/* Bottom Operation Code - Static, always visible */}
         <div className="absolute bottom-4 sm:bottom-6 right-4 sm:right-6 font-mono text-[10px] sm:text-xs text-text/20 z-10">
-          // END_TRANSMISSION :: VANT.OP.CLOSE.2025
+           // END_TRANSMISSION :: VANT.OP.CLOSE.2025
         </div>
 
-         {/* Top Left Accent - Still hidden on mobile */}
-        <div className="absolute top-8 left-8 font-mono text-xs text-primary/40 z-10 space-y-1 hidden sm:block">
-          <div>[STATUS: AWAITING_CONTACT]</div>
-          <div>[SIGNAL: ESTABLISHED]</div>
+         {/* Top Left Accent - Static, always visible */}
+         <div className={`absolute top-8 left-8 font-mono text-xs text-primary/40 z-10 space-y-1 hidden sm:block`}>
+           <div>[STATUS: AWAITING_CONTACT]</div>
+           <div>[SIGNAL: ESTABLISHED]</div>
         </div>
 
-        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+        {/* Main Content - Fade/slide-in animation */}
+        <div 
+          className={`max-w-4xl mx-auto px-4 text-center relative z-10 transition-all duration-700 ease-out ${isContactVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
+        >
           {/* Section Header */}
           <div className="flex items-center justify-center mb-6">
             <div className="w-12 h-[1px] bg-primary/30 mr-4" />
