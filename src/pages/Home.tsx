@@ -172,8 +172,8 @@ const Home = () => {
               >
                 <div>
                   <span className="text-primary/70 text-xs sm:text-sm tracking-wider font-mono">// OPERATION: VANGUARD</span>
-                  <h1 className="text-[15vw] sm:text-[12vw] lg:text-[8rem] font-bold text-text mt-2 sm:mt-4 leading-none">
-                    VANT<span className="text-primary">.</span>
+                  <h1 className="text-[15vw] sm:text-[12vw] lg:text-[8rem] font-bold text-text mt-1 leading-none">
+                    vant<span className="text-primary">.</span>
                   </h1>
                 </div>
                 
